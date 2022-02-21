@@ -8,6 +8,10 @@ https://www.youtube.com/watch?v=aACebENHlrs
 
 * Uses VGG-16, PCA
 
+* Added oreilly.ipynb for ResNet impl of CNN and NearestNeighbor use for sim
+
+* Added more metrics in metris.ipynb
+
 
 Possible extensions, things to work on
 --------------------------------------
