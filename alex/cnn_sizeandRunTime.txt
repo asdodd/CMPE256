@@ -1,0 +1,8 @@
+MacBook Pro M1: Using GPU
+
+Xception: 7:52 min / 74.9 MB
+Inception: 5:51 min / 74.9 MB
+VGG 16: 7:19 min / 149.8 MB
+VGG19: 8:28 / 149.8 MB
+ResNet152V2: 7:39 / 74.9 MB
+MobileNetV2: 4:22 / 46.8 MB

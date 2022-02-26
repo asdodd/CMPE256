@@ -8,6 +8,7 @@ from PIL import Image
 import glob
 import random
 from tqdm import tqdm
+import os
 
 # Path to Images
 folder = "/Volumes/Mac Data/Carla and John Visiting"
@@ -40,15 +41,26 @@ class FeatureExtractor:
         return feature / np.linalg.norm(feature)
 
 
+# #
+# images_path = "/Users/alexdodd/Documents/PythonLearning/AI_Masters_SJSU/7-CMPE-256-Advanced-Data-Mining/Project/CMPE256/alex/2/101_ObjectCategories"
+# image_extensions = ['.jpg', '.png', '.jpeg']   # case-insensitive (upper/lower doesn't matter)
+# max_num_images = 10000
+
+# images = [os.path.join(dp, f) for dp, dn, filenames in os.walk(images_path) for f in filenames if os.path.splitext(f)[1].lower() in image_extensions]
+# if max_num_images < len(images):
+#     images = [images[i] for i in sorted(random.sample(range(len(images)), max_num_images))]
+
+
 # Create FeatureExtractor Object
 model = FeatureExtractor()
+
 
 # Init Lists
 image_list = []
 featureList = []
 
 # Search through folder for images
-for filename in tqdm(glob.glob(folder + imageFileType)): 
+for filename in tqdm(images): 
     im=Image.open(filename)
 	# Save extracted features to list
     featureList.append(model.extract(im))
@@ -61,8 +73,14 @@ if_list = list(zip(featureList,image_list))
 random.shuffle(if_list)
 # RE-separate lists
 featureList, image_list = zip(*if_list)
+fL = open('/Users/alexdodd/Documents/PythonLearning/AI_Masters_SJSU/7-CMPE-256-Advanced-Data-Mining/Project/CMPE256/alex/2/features.npy','wb')
+iL = open('/Users/alexdodd/Documents/PythonLearning/AI_Masters_SJSU/7-CMPE-256-Advanced-Data-Mining/Project/CMPE256/alex/2/images.npy','wb')
+np.save(fL,featureList)
+np.save(iL,image_list)
 # Set minDist as INF
 minDist = np.inf
+
+
 
 # Find set the first picture as the Compare against Image
 # Find the minDistance between features of other images and the first image
