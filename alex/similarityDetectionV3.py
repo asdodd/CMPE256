@@ -57,7 +57,7 @@ image_list = []
 featureList = []
 
 # Search through folder for images
-for im in tqdm(images): ç
+for im in tqdm(images):
     # im=Image.open(filename)
 	# Save extracted features to list
     featureList.append(model.extract(im))

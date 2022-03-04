@@ -5,8 +5,8 @@ from PIL import Image
 import random
 
 # Put in path to feature and image list files
-featureFile = '/Users/alexdodd/Documents/PythonLearning/AI_Masters_SJSU/7-CMPE-256-Advanced-Data-Mining/Project/CMPE256/alex/2/cnnData/features_MobileNetV2.npy'
-imageFile = '/Users/alexdodd/Documents/PythonLearning/AI_Masters_SJSU/7-CMPE-256-Advanced-Data-Mining/Project/CMPE256/alex/2/cnnData/images_MobileNetV2.npy'
+featureFile = 'featuresFaces_MobileNetV2.npy'
+imageFile = 'imagesFaces_MobileNetV2.npy'
 
 # Define Euclidian distance
 def euclidian_distance(x,y):
