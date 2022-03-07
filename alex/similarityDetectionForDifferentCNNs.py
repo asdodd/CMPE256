@@ -20,6 +20,7 @@ from PIL import Image
 import random
 from tqdm import tqdm
 import os
+from sklearn.decomposition import PCA
 
 # Define Euclidian distance
 def euclidian_distance(x,y):
@@ -72,75 +73,86 @@ if max_num_images < len(images):
 
 # Create FeatureExtractor Object with diffrent CNNs
 # Set X to the CNN type desired
-x = 5
-cnnName = ["VGG16", "VGG19", "resnet", "inception", "mobile", "xception"]
-cnn = [VGG16, VGG19, ResNet152V2, InceptionV3, MobileNetV2, Xception]
-ppFunc =[pp_VGG16, pp_VGG19, pp_resnet, pp_inception, pp_mobile, pp_xception]
-cnnNameSelect = cnnName[x]
-cnnSelect = cnn[x]
-ppFuncSelect = ppFunc[x]
-model = FeatureExtractor(cnnNameSelect,cnnSelect,ppFuncSelect)
+x=5
+for i in range(x):
+    i = 5
+    cnnName = ["VGG16", "VGG19", "resnet", "inception", "mobile", "xception"]
+    cnn = [VGG16, VGG19, ResNet152V2, InceptionV3, MobileNetV2, Xception]
+    ppFunc =[pp_VGG16, pp_VGG19, pp_resnet, pp_inception, pp_mobile, pp_xception]
+    cnnNameSelect = cnnName[i]
+    cnnSelect = cnn[i]
+    ppFuncSelect = ppFunc[i]
+    model = FeatureExtractor(cnnNameSelect,cnnSelect,ppFuncSelect)
 
-# Init Lists
-image_list = []
-featureList = []
+    # Init Lists
+    image_list = []
+    featureList = []
 
-# Search through folder for images
-for im in tqdm(images):
-    # im=Image.open(filename)
-	# Save extracted features to list
-    featureList.append(model.extract(im))
-	# Save fileNames to List
-    image_list.append(im)
+    # Search through folder for images
+    for im in tqdm(images):
+        # im=Image.open(filename)
+        # Save extracted features to list
+        featureList.append(model.extract(im))
+        # Save fileNames to List
+        image_list.append(im)
 
-# Save files off to .npy files for faster comparison in the future
-fL = open('/Users/alexdodd/Documents/PythonLearning/AI_Masters_SJSU/7-CMPE-256-Advanced-Data-Mining/Project/CMPE256/alex/2/features_' + cnnName +'.npy','wb')
-iL = open('/Users/alexdodd/Documents/PythonLearning/AI_Masters_SJSU/7-CMPE-256-Advanced-Data-Mining/Project/CMPE256/alex/2/images_' + cnnName +'.npy','wb')
-np.save(fL,featureList)
-np.save(iL,image_list)
+    # Use PCA Features
 
-# Zip features and filenames together
-if_list = list(zip(featureList,image_list))
-# Shuffle List
-random.shuffle(if_list)
-# RE-separate lists
-featureList, image_list = zip(*if_list)
+    featureList = np.array(featureList)
+    pca = PCA(n_components=300)
+    pca.fit(featureList)
+    featureList = pca.transform(featureList)
 
 
-# Find set the first picture as the Compare against Image
-# Find the minDistance between features of other images and the first image
-# Set minDist as INF
-minDist = np.inf
-for idx, i in enumerate(featureList):
-  if idx == 0:
-    comp = i
-  else:
-    edist = euclidian_distance(comp,i)
-    if edist < minDist:
-      minDist = edist
-      minIndex = idx
 
-# Print the minDist and minIndex
-print(minDist, minIndex)
-  
+    # Save files off to .npy files for faster comparison in the future
+    fL = open('/Users/alexdodd/Documents/PythonLearning/AI_Masters_SJSU/7-CMPE-256-Advanced-Data-Mining/Project/CMPE256/alex/2/featuresPCA_' + cnnName[i] +'.npy','wb')
+    iL = open('/Users/alexdodd/Documents/PythonLearning/AI_Masters_SJSU/7-CMPE-256-Advanced-Data-Mining/Project/CMPE256/alex/2/imagesPCA_' + cnnName[i] +'.npy','wb')
+    np.save(fL,featureList)
+    np.save(iL,image_list)
 
-# Open the first image and its approximate match
-print(image_list[0])
-print(image_list[minIndex])
+    # Zip features and filenames together
+    if_list = list(zip(featureList,image_list))
+    # Shuffle List
+    random.shuffle(if_list)
+    # RE-separate lists
+    featureList, image_list = zip(*if_list)
 
-# Open image
-im1 = Image.open(image_list[0])
-im2 = Image.open(image_list[minIndex])
-im1 = np.array(im1)
-im2 = np.array(im2)
 
-# Convert to proper color
-im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2RGB)
-im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
+    # Find set the first picture as the Compare against Image
+    # Find the minDistance between features of other images and the first image
+    # Set minDist as INF
+    minDist = np.inf
+    for idx, i in enumerate(featureList):
+        if idx == 0:
+            comp = i
+        else:
+            edist = euclidian_distance(comp,i)
+            if edist < minDist:
+                minDist = edist
+                minIndex = idx
 
-# Show image and wait for user to press a key to end program
-cv2.imshow("final",im1)
-cv2.waitKey()
-cv2.imshow("final",im2)
-cv2.waitKey()
+    # Print the minDist and minIndex
+    print(minDist, minIndex)
+    
+
+    # Open the first image and its approximate match
+    print(image_list[0])
+    print(image_list[minIndex])
+
+    # Open image
+    im1 = Image.open(image_list[0])
+    im2 = Image.open(image_list[minIndex])
+    im1 = np.array(im1)
+    im2 = np.array(im2)
+
+    # Convert to proper color
+    im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2RGB)
+    im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
+
+    # # Show image and wait for user to press a key to end program
+    # cv2.imshow("final",im1)
+    # cv2.waitKey()
+    # cv2.imshow("final",im2)
+    # cv2.waitKey()
 
