@@ -3,10 +3,12 @@ import cv2
 import numpy as np
 from PIL import Image
 import random
+# import imagehash
+
 
 # Put in path to feature and image list files
-featureFile = 'features_MobileNetV2.npy'
-imageFile = 'images_MobileNetV2.npy'
+featureFile = '/Users/alexdodd/Documents/PythonLearning/AI_Masters_SJSU/7-CMPE-256-Advanced-Data-Mining/Project/CMPE256/alex/2/featuresFaces_InceptionV3.npy'
+imageFile = '/Users/alexdodd/Documents/PythonLearning/AI_Masters_SJSU/7-CMPE-256-Advanced-Data-Mining/Project/CMPE256/alex/2/imagesFaces_InceptionV3.npy'
 
 # Define Euclidian distance
 def euclidian_distance(x,y):
@@ -27,7 +29,11 @@ if_list = list(zip(featureList,image_list))
 random.shuffle(if_list)
 
 # Re-Separate lists
-featureList, image_list = zip(*if_list)
+featureList, image_list = zip(*if_list)   
+
+# hash = imagehash.average_hash(featureList[:,1])
+# print(hash)
+
 
 # Find set the first picture as the Compare against Image
 # Find the minDistance between features of other images and the first image
